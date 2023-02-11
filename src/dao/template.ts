@@ -53,6 +53,17 @@ export class TemplateDAO {
     return await db.getById(db_source, id);
   }
 
+  async update<T>(id: string, input: Partial<T>) {
+    await this.exists(id);
+
+    const data: T = await this.getById(id);
+    const newData = Object.assign(data, input);
+
+    db.save(`${db_source}/${id}`, newData);
+
+    return newData;
+  }
+
   async delete(id: string) {
     await this.exists(id);
 

@@ -5,3 +5,5 @@ export const create = Joi.object<TemplateDTO>({
   name: Joi.string().required(),
   template: Joi.string().required()
 });
+
+export const update = create.options({ presence: 'optional' });

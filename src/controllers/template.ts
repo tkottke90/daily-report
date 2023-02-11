@@ -6,6 +6,7 @@ import {
   Get,
   Next,
   Params,
+  Patch,
   Post,
   Query,
   Response
@@ -86,6 +87,22 @@ export class TemplateController {
     }
   }
 
+  @Patch('/:id', [ValidateBody(TemplateValidation.update)])
+  async updateTemplate(
+    @Response() res: express.Response,
+    @Params('id') id: string,
+    @Body() data: Partial<TemplateDTO>,
+    @Next() next: express.NextFunction
+  ) {
+    try {
+      const newData = await this.templates.update(id, data);
+
+      return res.json(newData);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   @Post('/:id/test')
   async createTemplateData(
     @Response() res: express.Response,
@@ -94,15 +111,10 @@ export class TemplateController {
     @Next() next: express.NextFunction
   ) {
     try {
-      const template = await this.templates.getById(id);
+      await this.templates.getById(id);
 
-      if (!template) {
-        res.status(404).json({ message: 'No Template Found With That ID' });
-      } else {
-        const result = this.templates.parseTemplate(id, data);
-
-        res.send(result);
-      }
+      const result = await this.templates.parseTemplate(id, data);
+      res.send(result);
     } catch (err) {
       next(err);
     }
