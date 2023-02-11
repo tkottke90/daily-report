@@ -1,10 +1,10 @@
 {
   "name": "daily-report-api",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server-build": "tsc",
+    "server-build": "npm run format && tsc",
     "docker-build": "docker build -t ghcr.io/tkottke90/daily-report-api:$(node ./bin/getVersion) --build-arg \"COMMIT=$(git rev-parse HEAD)\" --build-arg \"BRANCH=$(git rev-parse --abbrev-ref HEAD)\"  .",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "lint": "eslint --fix src/**/*",
