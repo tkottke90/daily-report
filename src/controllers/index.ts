@@ -6,7 +6,15 @@
 import { attachControllers } from '@decorators/express';
 import { Application } from 'express';
 import { ServerStatusController } from './server-status';
+import { TemplateController } from './template';
+import { TemplateDataController } from './template-data';
+
+const controllers = [
+  ServerStatusController,
+  TemplateController,
+  TemplateDataController
+];
 
 export default function (app: Application) {
-  attachControllers(app, [ServerStatusController]);
+  attachControllers(app, controllers);
 }

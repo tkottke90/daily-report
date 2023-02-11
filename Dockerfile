@@ -1,23 +1,18 @@
-FROM node:18 AS build_stage
-
-WORKDIR /usr/build/
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
 FROM node:18
+
+LABEL author="Thomas Kottke <t.kottke90@gmail.com>"
+LABEL org.opencontainers.image.source=https://github.com/tkottke90/daily-report
+
+ARG BRANCH=""
+ARG COMMIT=""
+
+ENV GIT_COMMIT=${COMMIT}
+ENV GIT_BRANCH=${BRANCH}
 
 WORKDIR /usr/app/
 
-COPY --from=build_stage /usr/build/dist /usr/app/dist
+COPY ./dist ./dist/
 COPY package*.json ./
-
-COPY ./server .
 
 RUN npm ci
 

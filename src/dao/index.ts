@@ -3,3 +3,5 @@
 // and any external data sources.  You can export
 // your DAOs from this file to simplify your import
 // statements
+
+export { TemplateDAO } from './template';
