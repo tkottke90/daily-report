@@ -17,6 +17,13 @@ export class TemplateDAO {
     db.getOrCreate(db_source, {});
   }
 
+  async exists(id: string) {
+    const path = `${db_source}/${id}`;
+    if (!(await this.db.exists(path))) {
+      throw TemplateNotFoundError;
+    }
+  }
+
   async create(dto: TemplateDTO, force = false) {
     const templateMap = await this.db.get<Record<string, TemplateDTO>>(
       db_source
@@ -43,10 +50,14 @@ export class TemplateDAO {
   }
 
   async getById(id: string) {
+    await this.exists(id);
+
     return await this.db.getById(db_source, id);
   }
 
   async delete(id: string) {
+    await this.exists(id);
+
     return await this.db.delete(`${db_source}/${id}`);
   }
 
