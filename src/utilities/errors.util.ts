@@ -31,6 +31,12 @@ export class NotFoundError extends HTTPError {
   }
 }
 
+export class ConflictError extends HTTPError {
+  constructor(message: string) {
+    super(message, 409);
+  }
+}
+
 export class UnprocessableError extends HTTPError {
   constructor(message: string) {
     super(message, 422);

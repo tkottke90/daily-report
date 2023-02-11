@@ -7,12 +7,14 @@ import {
   Next,
   Params,
   Post,
+  Query,
   Response
 } from '@decorators/express';
 import express from 'express';
+import Joi from 'joi';
 import { TemplateDAO } from '../dao';
 import { TemplateDTO } from '../dto';
-import { ValidateBody } from '../middleware';
+import { ValidateBody, ValidateQuery } from '../middleware';
 import { TemplateValidation } from '../validation';
 
 @Controller('/templates')
@@ -25,20 +27,24 @@ export class TemplateController {
     @Next() next: express.NextFunction
   ) {
     try {
-      res.json(this.templates.getAll());
+      res.json(await this.templates.getAll());
     } catch (err) {
       next(err);
     }
   }
 
-  @Post('/', [ValidateBody(TemplateValidation.create)])
+  @Post('/', [
+    ValidateBody(TemplateValidation.create),
+    ValidateQuery(Joi.object({ force: Joi.boolean().optional() }))
+  ])
   async createTemplate(
     @Response() res: express.Response,
     @Body() body: TemplateDTO,
-    @Next() next: express.NextFunction
+    @Next() next: express.NextFunction,
+    @Query('force') force?: boolean
   ) {
     try {
-      const id = this.templates.create(body);
+      const id = await this.templates.create(body, force);
 
       res.status(202).json({ id });
     } catch (err) {
@@ -53,7 +59,7 @@ export class TemplateController {
     @Next() next: express.NextFunction
   ) {
     try {
-      const template = this.templates.getById(id);
+      const template = await this.templates.getById(id);
 
       if (!template) {
         res.status(404).json({ message: 'No Template Found With That ID' });
@@ -72,7 +78,7 @@ export class TemplateController {
     @Next() next: express.NextFunction
   ) {
     try {
-      this.templates.delete(id);
+      await this.templates.delete(id);
 
       res.status(204).send();
     } catch (err) {
@@ -88,7 +94,7 @@ export class TemplateController {
     @Next() next: express.NextFunction
   ) {
     try {
-      const template = this.templates.getById(id);
+      const template = await this.templates.getById(id);
 
       if (!template) {
         res.status(404).json({ message: 'No Template Found With That ID' });

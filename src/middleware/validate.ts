@@ -71,7 +71,7 @@ export function ValidateParam(
       );
     }
 
-    req.body = validationResult.value;
+    req.params = validationResult.value;
 
     next();
   };
@@ -102,7 +102,7 @@ export function ValidateQuery(schema: Schema, options: ValidationOptions = {}) {
       );
     }
 
-    req.body = validationResult.value;
+    req.query = validationResult.value;
 
     next();
   };

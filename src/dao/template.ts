@@ -1,43 +1,60 @@
-import { Container, Injectable, InjectionToken } from '@decorators/di';
+import { Container, Inject, Injectable, InjectionToken } from '@decorators/di';
 import { randomUUID } from 'node:crypto';
 import { TemplateDTO } from '../dto';
-import { NotFoundError } from '../utilities';
+import { ConflictError, NotFoundError } from '../utilities';
 import { get } from 'lodash';
-
-const tempMap = new Map<string, TemplateDTO>();
+import { DataSource } from '../db';
 
 const interpolationRegex = /\$\{[\w\d]*\}/gm;
 const labelRegex = /\$\{([\w\d]*)\}/gm;
+const db_source = '/templates';
 
 const TemplateNotFoundError = new NotFoundError('Template With ID Not Found');
 
 @Injectable()
 export class TemplateDAO {
-  create(dto: TemplateDTO) {
+  constructor(@Inject(DataSource) private db: DataSource) {
+    db.getOrCreate(db_source, {});
+  }
+
+  async create(dto: TemplateDTO, force = false) {
+    const templateMap = await this.db.get<Record<string, TemplateDTO>>(
+      db_source
+    );
+    const matchedTemplates = Object.entries(templateMap).filter(
+      ([, value]) => value.name === dto.name
+    );
+
+    if (!force && matchedTemplates.length > 0) {
+      throw new ConflictError(
+        'Template with name already exists, include "&force=true" query to continue'
+      );
+    }
+
     const id = randomUUID();
 
-    tempMap.set(id, dto);
+    await this.db.save(`${db_source}/${id}`, dto);
 
     return id;
   }
 
-  getAll() {
-    return Array.from(tempMap);
+  async getAll() {
+    return await this.db.get(db_source);
   }
 
-  getById(id: string) {
-    return tempMap.get(id);
+  async getById(id: string) {
+    return await this.db.getById(db_source, id);
   }
 
-  delete(id: string) {
-    if (!tempMap.has(id)) {
-      throw TemplateNotFoundError;
-    }
+  async delete(id: string) {
+    return await this.db.delete(`${db_source}/${id}`);
   }
 
-  parseTemplate(templateId: string, input: Record<string, string>) {
+  async parseTemplate(templateId: string, input: Record<string, string>) {
     const inputConfig = Object.assign({ items: [] }, input);
-    const templateConfig = tempMap.get(templateId);
+    const templateConfig = await this.getById(templateId).catch(
+      () => undefined
+    );
 
     if (!templateConfig) {
       throw TemplateNotFoundError;
