@@ -1,4 +1,4 @@
-import { Container, Injectable, InjectionToken } from '@decorators/di';
+import { Injectable } from '@decorators/di';
 import { JsonDB, Config } from 'node-json-db';
 import { LoggerService } from './services';
 
@@ -51,6 +51,6 @@ export class DataSource {
   }
 }
 
-Container.provide([
-  { provide: new InjectionToken('DataSource'), useClass: DataSource }
-]);
+const dataSourceInstance = new DataSource();
+
+export default dataSourceInstance;

@@ -11,7 +11,4 @@ app.use(HttpEventMiddleware);
 
 controllers(app);
 
-// app.use(ErrorLogger);
-// app.use(ErrorResponder);
-// app.use(SafeErrorHandler);
 export default app;

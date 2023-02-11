@@ -1,4 +1,4 @@
-import { Container, Injectable, InjectionToken } from '@decorators/di';
+import { Injectable } from '@decorators/di';
 
 type tempLevels = 'info';
 
@@ -25,9 +25,5 @@ class LoggerService implements ILoggerService<tempLevels> {
     }
   }
 }
-
-Container.provide([
-  { provide: new InjectionToken('LoggerService'), useClass: LoggerService }
-]);
 
 export default new LoggerService();
