@@ -11,8 +11,8 @@
     "start": "nodemon",
     "publish": "git push --follow-tags origin main && docker push ghcr.io/tkottke90/daily-report-api:$(node ./bin/getVersion)",
     "build": "npm run server-build && npm run docker-build",
-    "release": "standard-version -- -r minor && npm run build && npm run publish",
-    "release-major": "standard-version -- -r major && npm run build && npm run publish"
+    "release": "standard-version -r minor && npm run build && npm run publish",
+    "release-major": "standard-version -r major && npm run build && npm run publish"
   },
   "keywords": [],
   "author": "",
