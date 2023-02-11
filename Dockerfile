@@ -16,7 +16,7 @@ COPY package*.json ./
 
 RUN npm ci
 
-CMD [ "node", "server/index.js"]
+CMD [ "node", "dist/index.js"]
 
 ENV PORT 3000
 ENV NODE_ENV production
