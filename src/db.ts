@@ -38,6 +38,12 @@ export class DataSource {
     return this.db.getData(`${path}/${id}`);
   }
 
+  async getArrayItem(path: string, id: string, idKey = 'id') {
+    const index = await this.db.getIndex(path, id, idKey);
+
+    return await this.get(`${path}[${index}]`);
+  }
+
   save(path: string, data: Record<string, any>) {
     return this.db.push(path, data);
   }
