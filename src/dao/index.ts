@@ -5,3 +5,4 @@
 // statements
 
 export { TemplateDAO } from './template';
+export { TemplateDataDAO } from './template-data';

@@ -71,7 +71,7 @@ export function ValidateParam(
       );
     }
 
-    req.params = validationResult.value;
+    req.params[param] = validationResult.value;
 
     next();
   };
