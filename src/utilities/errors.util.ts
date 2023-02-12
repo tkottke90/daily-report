@@ -48,3 +48,9 @@ export class GeneralError extends HTTPError {
     super(message, 500);
   }
 }
+
+export class NotImplementedError extends HTTPError {
+  constructor(message: string) {
+    super(message, 501);
+  }
+}
